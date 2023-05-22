@@ -1,0 +1,151 @@
+<?xml version = "1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="swerve_robot">
+<xacro:include filename= "$(find dog_robot)/urdf/sewrve_wheel.xacro"/>
+
+<!-- base link -->
+<xacro:property name="base_link_l" value = "0.7"/>
+<xacro:property name ="base_link_h" value= "0.05"/>
+<!-- ======== -->
+
+<!-- box -->
+<xacro:property name = "box" value = "0.05"/>
+<xacro:property name = "box_x" value = "0.38"/>
+<xacro:property name = "box_y" value = "0"/>
+<xacro:property name = "box_z" value = "0.04"/>
+<!-- ==== -->
+
+<!-- mass -->
+<!-- box -->
+<xacro:property name = "base_mass" value = "5"/>
+<xacro:property name = "box" value = "0.05"/>
+<xacro:property name = "box_x" value = "0.38"/>
+<xacro:property name = "box_y" value = "0"/>
+<xacro:property name = "box_z" value = "0.04"/>
+<xacro:property name = "bixx" value = "0.0513"/>
+<xacro:property name = "biyy" value = "0.0513"/>
+<xacro:property name = "bizz" value = "0.102"/>
+<!-- ==== -->
+
+
+<link name="dummy">
+
+</link>
+<joint name="dummy_base" type = "fixed">
+	<parent link="dummy"/>
+	<child link = "base_link"/>
+	
+</joint>
+
+
+<link name="base_link">
+	<visual>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<geometry>
+			<box size="${base_link_l} ${base_link_l} ${base_link_h}"/>
+		</geometry>
+		<material name = "black">
+			<color rgba= "0.0 0.0 0.0 1.0"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<geometry>
+			<box size="${base_link_l} ${base_link_l} ${base_link_h}"/>
+		</geometry>
+		<material name = "black">
+			<color rgba= "0.0 0.0 0.0 1.0"/>
+		</material>
+	</collision>
+	<inertial>
+		<mass value = "${base_mass}"/>
+		<origin value ="0 0 0"/>
+		<inertia ixx = "${bixx}" ixy="0" ixz ="0" iyy = "${biyy}" iyz ="0" izz = "${bizz}"/>
+	</inertial>
+
+</link>
+
+<!--=============hokuyu================-->
+  <joint name="hokuyo_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0 0.3 0.06" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="hokuyo_link"/>
+  </joint>
+
+  <!-- Hokuyo Laser -->
+  <link name="hokuyo_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+    <box size="0.1 0.1 0.1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://dog_robot/meshes/hokuyo.dae"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+    <!-- hokuyo -->
+  <gazebo reference="hokuyo_link">
+    <sensor type="gpu_ray" name="head_hokuyo_sensor">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>40</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>0</min_angle>
+            <max_angle>3.14</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.10</min>
+          <max>30.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise parameters based on published spec for Hokuyo laser
+               achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+               stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+               reading. -->
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_gpu_laser.so">
+        <topicName>/rrbot/laser/scan</topicName>
+        <frameName>hokuyo_link</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+<!-- ============================== -->
+
+<xacro:motor prefix ="b1" parent="base_link" r="1" b="1"/>
+<xacro:motor prefix ="b2" parent="base_link" r="1" b="-1"/>
+<xacro:motor prefix ="f1" parent="base_link" r="-1" b="-1"/>
+<xacro:motor prefix ="f2" parent="base_link" r="-1" b="1"/>
+
+
+<gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/swerve</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      		<odometryTopic>odom</odometryTopic>
+		<odometryFrame>odom</odometryFrame>
+		<odometryRate>20.0</odometryRate>
+    </plugin>
+</gazebo>
+</robot>

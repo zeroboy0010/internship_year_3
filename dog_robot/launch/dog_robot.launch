@@ -1,0 +1,49 @@
+<?xml version = "1.0" ?>
+<launch>
+	<!-- there are the argument you can pass this launch file, for example paused:=True -->
+	<arg name="paused" default="false"/>
+	<arg name="use_sim_time" default="true"/>
+	<arg name="gui" default="true"/>
+	<arg name="headless" default="false"/>
+	<arg name="debug" default="false"/>
+	
+	<!-- We resume the logic in empty_world.launch -->
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">
+		<arg name="debug" value="$(arg debug)"/>
+		<arg name="gui" value="$(arg gui)"/>
+		<arg name="paused" value="$(arg paused)"/>
+		<arg name="use_sim_time" value ="$(arg use_sim_time)"/>
+		<arg name="headless" value="$(arg headless)"/>
+	</include>
+	<param name = "robot_description" command = "$(find xacro)/xacro --inorder $(find dog_robot)/urdf/dog_leg1.xacro"/>
+	<node name = "robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn ="false" output = "screen">
+            <remap from ="/joint_states" to ="/dog_robot/joint_states" />
+      </node>
+	<node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui"/>
+	<node name="rviz" pkg = "rviz" type = "rviz" args = "-d $(find dog_robot)/rviz/dog.rviz" required="true"/>
+<node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -x 0 -y 0 -z 0.9
+-model robot 
+-param robot_description
+-unpause"/>
+<rosparam file="$(find dog_robot)/yaml/dog_robot.yaml" command="load"/>
+<node name="controller_spawner"
+        pkg="controller_manager"
+        type="spawner"
+        output = "screen"
+        respawn = "false" 
+        ns = "/dog_robot"
+        args= "leg1_back1_base_link_controller
+              back1_rot_base_controller
+              back1_leg1_joint_controller
+              leg1_back2_base_link_controller
+              back2_rot_base_controller
+              back2_leg1_joint_controller
+              leg1_face1_base_link_controller
+              face1_rot_base_controller
+              face1_leg1_joint_controller
+              leg1_face2_base_link_controller
+              face2_rot_base_controller
+              face2_leg1_joint_controller
+              joint_state_controller" />
+              
+</launch>

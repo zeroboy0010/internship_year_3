@@ -1,0 +1,693 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http:/www.ros.org/wiki/xacro" name="robot">
+
+<!-- base link -->
+<xacro:property name="base_link_l" value = "0.7"/>
+<xacro:property name ="base_link_h" value= "0.05"/>
+<!-- ======== -->
+
+<!-- motor -->
+<xacro:property name="motor_r" value="0.025"/>
+<xacro:property name="motor_h" value= "0.15"/>
+<!-- ===== -->
+
+<!-- motor1 location -->
+<xacro:property name="motor_x" value = "0.3"/>
+<xacro:property name="motor_y" value = "0.3"/>
+<xacro:property name="motor_z" value = "0"/>
+<!-- ============== -->
+
+<!-- motor2 location -->
+<xacro:property name = "motor2_x" value = "0"/>
+<xacro:property name = "motor2_y" value = "0"/>
+<xacro:property name = "motor2_z" value ="-0.075"/>
+<!-- ============== -->
+
+<!-- wheel -->
+<xacro:property name = "wheel_r" value = "0.05"/>
+<xacro:property name = "wheel_h" value = "0.05" />
+<!-- ===== -->
+
+<!-- wheel location -->
+<xacro:property name="wheel_x" value ="0.0025"/>
+<xacro:property name="wheel_y" value ="0.0025"/>
+<xacro:property name="wheel_z" value ="0"/>
+<!-- ============== -->
+
+<!-- moment of inertia -->
+<xacro:property name = "base_mass" value = "5"/>
+<xacro:property name = "motor_mass" value = "0.5"/>
+<xacro:property name = "wheel_mass" value = "0.6"/>
+<xacro:property name = "bixx" value = "0.0513"/>
+<xacro:property name = "biyy" value = "0.0513"/>
+<xacro:property name = "bizz" value = "0.102"/>
+<xacro:property name =  "mixx" value = "0.0005"/>
+<xacro:property name ="miyy" value ="0.0005"/>
+<xacro:property name = "mizz" value = "0.00075"/>
+<xacro:property name = "wixx" value = "0.00102"/>
+<xacro:property name ="wiyy" value ="0.00102"/>
+<xacro:property name = "wizz" value = "0.00016"/>
+<!-- ================= -->
+
+<!-- effort -->
+<xacro:property name= "effort" value = "5"/>
+<xacro:property name="velocity" value = "50"/>
+<!-- ============ -->
+
+<!-- box -->
+<xacro:property name = "box" value = "0.05"/>
+<xacro:property name = "box_x" value = "0.38"/>
+<xacro:property name = "box_y" value = "0"/>
+<xacro:property name = "box_z" value = "0.04"/>
+<!-- ==== -->
+<link name="dummy">
+
+</link>
+<joint name="dummy_base" type = "fixed">
+	<parent link="dummy"/>
+	<child link = "base_link"/>
+	
+</joint>
+<link name="laser_scan">
+	<visual>
+		<origin xyz = "0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<box size = "${box} ${box} ${box}"/>
+		</geometry>
+		<material name = "white">
+			<color rgba = "0.0 0.0 0.0 1.0"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz = "0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<box size = "${box} ${box} ${box}"/>
+		</geometry>
+		<material name = "white">
+			<color rgba = "0.0 0.0 0.0 1.0"/>
+		</material>
+	</collision>
+</link>
+
+<link name="base_link">
+	<visual>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<geometry>
+			<box size="${base_link_l} ${base_link_l} ${base_link_h}"/>
+		</geometry>
+		<material name = "black">
+			<color rgba= "0.0 0.0 0.0 1.0"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<geometry>
+			<box size="${base_link_l} ${base_link_l} ${base_link_h}"/>
+		</geometry>
+		<material name = "black">
+			<color rgba= "0.0 0.0 0.0 1.0"/>
+		</material>
+	</collision>
+	<inertial>
+		<mass value = "${base_mass}"/>
+		<origin value ="0 0 0"/>
+		<inertia ixx = "${bixx}" ixy="0" ixz ="0" iyy = "${biyy}" iyz ="0" izz = "${bizz}"/>
+	</inertial>
+
+</link>
+<joint name = "base_link_box" type = "fixed">
+	<origin xyz = "${box_x} ${box_y} ${box_z}"/>
+	<parent link ="base_link"/>
+	<child link = "laser_scan"/>
+	
+</joint>
+<!-- b1 -->
+<link name = "b1m1">
+	<visual>
+		<origin xyz ="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz ="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<surface>
+          	<friction>
+            		<ode>
+              			<mu>200.0</mu>
+              			<mu2>100.0</mu2>
+            		</ode>
+          	</friction>
+        		</surface>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</collision>
+	<inertial>
+		<mass value = "${motor_mass}"/>
+		<origin value ="0 0 0"/>
+		<inertia ixx = "${mixx}" ixy="0" ixz ="0" iyy = "${miyy}" iyz ="0" izz = "${mizz}"/>
+	</inertial>
+</link>
+<joint name = "base_link_b1m1" type = "continuous">
+	<origin xyz = "${motor_x} ${motor_y} ${motor_z}" rpy = "0 0 1.57"/>
+	<parent link = "base_link"/>
+	<axis xyz = "0 0 1"/>
+	<child link = "b1m1"/>
+	<limit effort = "${effort}" velocity = "${velocity}" />
+</joint>
+<link name = "b1m2">
+	<visual>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</collision>
+	<inertial>
+		<mass value = "${motor_mass}"/>
+		<origin xyz = "0 0 0"/>
+		<inertia ixx="${mixx}" ixy = "0" ixz = "0" iyy = "${miyy}" iyz = "0" izz = "${mizz}"/>
+	</inertial>
+</link>
+<joint name="b1m1_b1m2" type = "fixed">
+	<origin xyz = "${motor2_x} ${motor2_y} ${motor2_z}" rpy = "0 1.57 0"/>
+	<parent link = "b1m1"/>
+	<child link = "b1m2"/>
+</joint>
+<link name="b1wheel">
+	<visual>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length = "${wheel_h}" radius ="${wheel_r}" />
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length = "${wheel_h}" radius ="${wheel_r}" />
+		</geometry>
+		<surface>
+          	<friction>
+            		<ode>
+              			<mu>200.0</mu>
+              			<mu2>100.0</mu2>
+            		</ode>
+          	</friction>
+        		</surface>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</collision>
+	<inertial>
+		<mass value = "${wheel_mass}"/>
+		<origin xyz = "0 0 0"/>
+		<inertia ixx="${wixx}" ixy = "0" ixz = "0" iyy = "${wiyy}" iyz = "0" izz = "${wizz}"/>
+	</inertial>
+</link>
+<joint name = "b1m2_b1wheel" type = "continuous">
+	<origin xyz = "${wheel_x} ${wheel_y} ${wheel_z}" rpy = "0 0 1.57"/>
+	<parent link="b1m2"/>
+	<child link="b1wheel"/>
+	<axis xyz="0 0 1"/>
+	<limit effort="${effort}" velocity ="${velocity}" />
+</joint>
+<!-- end b1 -->
+
+
+<!-- b2 -->
+<link name = "b2m1">
+	<visual>
+		<origin xyz ="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz ="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<surface>
+		<friction>
+            		<ode>
+              			<mu>200.0</mu>
+              			<mu2>100.0</mu2>
+            		</ode>
+          	</friction>
+        		</surface>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</collision>
+	<inertial>
+		<mass value = "${motor_mass}"/>
+		<origin value ="0 0 0"/>
+		<inertia ixx = "${mixx}" ixy="0" ixz ="0" iyy = "${miyy}" iyz ="0" izz = "${mizz}"/>
+	</inertial>
+</link>
+<joint name = "base_link_b2m1" type = "continuous">
+	<origin xyz = "${motor_x} ${-motor_y} ${motor_z}" rpy = "0 0 1.57"/>
+	<parent link = "base_link"/>
+	<axis xyz = "0 0 1"/>
+	<child link = "b2m1"/>
+	<limit effort = "${effort}" velocity = "${velocity}" />
+</joint>
+<link name = "b2m2">
+	<visual>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</collision>
+	<inertial>
+		<mass value = "${motor_mass}"/>
+		<origin xyz = "0 0 0"/>
+		<inertia ixx="${mixx}" ixy = "0" ixz = "0" iyy = "${miyy}" iyz = "0" izz = "${mizz}"/>
+	</inertial>
+</link>
+<joint name="b2m1_b2m2" type = "fixed">
+	<origin xyz = "${motor2_x} ${motor2_y} ${motor2_z}" rpy = "0 1.57 0"/>
+	<parent link = "b2m1"/>
+	<child link = "b2m2"/>
+</joint>
+<link name="b2wheel">
+	<visual>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length = "${wheel_h}" radius ="${wheel_r}" />
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length = "${wheel_h}" radius ="${wheel_r}" />
+		</geometry>
+		<surface>
+          	<friction>
+            		<ode>
+              			<mu>200.0</mu>
+              			<mu2>100.0</mu2>
+            		</ode>
+          	</friction>
+        		</surface>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</collision>
+	<inertial>
+		<mass value = "${wheel_mass}"/>
+		<origin xyz = "0 0 0"/>
+		<inertia ixx="${wixx}" ixy = "0" ixz = "0" iyy = "${wiyy}" iyz = "0" izz = "${wizz}"/>
+	</inertial>
+</link>
+<joint name = "b2m2_b2wheel" type = "continuous">
+	<origin xyz = "${wheel_x} ${wheel_y} ${wheel_z}" rpy = "0 0 1.57"/>
+	<parent link="b2m2"/>
+	<child link="b2wheel"/>
+	<axis xyz="0 0 1"/>
+	<limit effort="${effort}" velocity ="${velocity}" />
+</joint>
+
+<!-- end b2 -->
+
+<!-- f1 -->
+<link name = "f1m1">
+	<visual>
+		<origin xyz ="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz ="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<surface>
+          	<friction>
+            		<ode>
+              			<mu>200.0</mu>
+              			<mu2>100.0</mu2>
+            		</ode>
+          	</friction>
+        		</surface>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</collision>
+	<inertial>
+		<mass value = "${motor_mass}"/>
+		<origin value ="0 0 0"/>
+		<inertia ixx = "${mixx}" ixy="0" ixz ="0" iyy = "${miyy}" iyz ="0" izz = "${mizz}"/>
+	</inertial>
+</link>
+<joint name = "base_link_f1m1" type = "continuous">
+	<origin xyz = "${-motor_x} ${-motor_y} ${motor_z}" rpy = "0 0 1.57"/>
+	<parent link = "base_link"/>
+	<axis xyz = "0 0 1"/>
+	<child link = "f1m1"/>
+	<limit effort = "${effort}" velocity = "${velocity}" />
+</joint>
+<link name = "f1m2">
+	<visual>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</collision>
+	<inertial>
+		<mass value = "${motor_mass}"/>
+		<origin xyz = "0 0 0"/>
+		<inertia ixx="${mixx}" ixy = "0" ixz = "0" iyy = "${miyy}" iyz = "0" izz = "${mizz}"/>
+	</inertial>
+</link>
+<joint name="f1m1_f1m2" type = "fixed">
+	<origin xyz = "${motor2_x} ${motor2_y} ${motor2_z}" rpy = "0 1.57 0"/>
+	<parent link = "f1m1"/>
+	<child link = "f1m2"/>
+</joint>
+<link name="f1wheel">
+	<visual>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length = "${wheel_h}" radius ="${wheel_r}" />
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length = "${wheel_h}" radius ="${wheel_r}" />
+		</geometry>
+		<surface>
+          	<friction>
+            		<ode>
+              			<mu>200.0</mu>
+              			<mu2>100.0</mu2>
+            		</ode>
+          	</friction>
+        		</surface>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</collision>
+	<inertial>
+		<mass value = "${wheel_mass}"/>
+		<origin xyz = "0 0 0"/>
+		<inertia ixx="${wixx}" ixy = "0" ixz = "0" iyy = "${wiyy}" iyz = "0" izz = "${wizz}"/>
+	</inertial>
+</link>
+<joint name = "f1m2_f1wheel" type = "continuous">
+	<origin xyz = "${wheel_x} ${wheel_y} ${-wheel_z}" rpy = "0 0 1.57"/>
+	<parent link="f1m2"/>
+	<child link="f1wheel"/>
+	<axis xyz="0 0 1"/>
+	<limit effort="${effort}" velocity ="${velocity}" />
+</joint>
+<!-- end f1 -->
+
+
+<!-- f2 -->
+<link name = "f2m1">
+	<visual>
+		<origin xyz ="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz ="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<surface>
+          	<friction>
+            		<ode>
+              			<mu>200.0</mu>
+              			<mu2>100.0</mu2>
+            		</ode>
+          	</friction>
+        		</surface>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</collision>
+	<inertial>
+		<mass value = "${motor_mass}"/>
+		<origin value ="0 0 0"/>
+		<inertia ixx = "${mixx}" ixy="0" ixz ="0" iyy = "${miyy}" iyz ="0" izz = "${mizz}"/>
+	</inertial>
+</link>
+<joint name = "base_link_f2m1" type = "continuous">
+	<origin xyz = "${-motor_x} ${motor_y} ${motor_z}" rpy = "0 0 1.57"/>
+	<parent link = "base_link"/>
+	<axis xyz = "0 0 1"/>
+	<child link = "f2m1"/>
+	<limit effort = "${effort}" velocity = "${velocity}" />
+</joint>
+<link name = "f2m2">
+	<visual>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</collision>
+	<inertial>
+		<mass value = "${motor_mass}"/>
+		<origin xyz = "0 0 0"/>
+		<inertia ixx="${mixx}" ixy = "0" ixz = "0" iyy = "${miyy}" iyz = "0" izz = "${mizz}"/>
+	</inertial>
+</link>
+<joint name="f2m1_f2m2" type = "fixed">
+	<origin xyz = "${motor2_x} ${motor2_y} ${motor2_z}" rpy = "0 1.57 0"/>
+	<parent link = "f2m1"/>
+	<child link = "f2m2"/>
+</joint>
+<link name="f2wheel">
+	<visual>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length = "${wheel_h}" radius ="${wheel_r}" />
+		</geometry>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz="0 0 0" rpy = "0 0 0"/>
+		<geometry>
+			<cylinder length = "${wheel_h}" radius ="${wheel_r}" />
+		</geometry>
+		<surface>
+          	<friction>
+            		<ode>
+              			<mu>200.0</mu>
+              			<mu2>100.0</mu2>
+            		</ode>
+          	</friction>
+        		</surface>
+		<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	</collision>
+	<inertial>
+		<mass value = "${wheel_mass}"/>
+		<origin xyz = "0 0 0"/>
+		<inertia ixx="${wixx}" ixy = "0" ixz = "0" iyy = "${wiyy}" iyz = "0" izz = "${wizz}"/>
+	</inertial>
+</link>
+<joint name = "f2m2_f2wheel" type = "continuous">
+	<origin xyz = "${wheel_x} ${wheel_y} ${-wheel_z}" rpy = "0 0 1.57"/>
+	<parent link="f2m2"/>
+	<child link="f2wheel"/>
+	<axis xyz="0 0 1"/>
+	<limit effort="${effort}" velocity ="${velocity}" />
+</joint>
+
+<gazebo reference = "laser_scan">
+	<material>Gazebo/Blue</material>
+	<trunGravityOff>false</trunGravityOff>
+	<sensor type = "ray" name ="laser_scan_sensor">
+		<pose> 0 ${box/2} 0 0 0 0</pose>
+		<visualize>true</visualize>
+		<update_rate>10.0</update_rate>
+		<ray>
+			<scan>
+				<horizontal>
+					<sample>1000</sample>
+					<resolution>1</resolution>
+					<min_angle>-1.57</min_angle>
+					<max_angle>1.57</max_angle>
+				</horizontal>
+			</scan>
+			<range>
+				<min>0.1</min> <!-- minimum scan-->
+				<max>10</max><!--maximum scan-->
+				<resolution>1</resolution>
+			</range>
+		</ray>
+		<plugin name ="laser_scanner" filename="libgazebo_ros_laser.so">
+			<topicName>/scan</topicName>
+			<frameName>laser_scan</frameName>
+		</plugin>
+	</sensor>
+</gazebo>
+
+<!-- end f1 -->
+<transmission name = "b1t1">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name = "base_link_b1m1">
+		<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+	</joint>
+	<actuator name= "motor1">
+		<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      		<mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+</transmission>
+<transmission name = "b1t2">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name = "b1m2_b1wheel">
+		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+	</joint>
+	<actuator name= "motor2">
+      		<mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+</transmission>
+<transmission name = "b2t1">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name = "base_link_b2m1">
+		<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+	</joint>
+	<actuator name= "motor3">
+		<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      		<mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+</transmission>
+<transmission name = "b2t2">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name = "b2m2_b2wheel">
+		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+	</joint>
+	<actuator name= "motor4">
+      		<mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+</transmission>
+<transmission name = "f1t1">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name = "base_link_f1m1">
+		<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+	</joint>
+	<actuator name= "motor5">
+		<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      		<mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+</transmission>
+<transmission name = "f1t2">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name = "f1m2_f1wheel">
+		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+	</joint>
+	<actuator name= "motor6">
+      		<mechanicalReduction>1</mechanicalReduction>
+      	</actuator>
+</transmission>
+<transmission name = "f2t1">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name = "base_link_f2m1">
+		<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+	</joint>
+	<actuator name= "motor7">
+		<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      		<mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+</transmission>
+<transmission name = "f2t2">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name = "f2m2_f2wheel">
+		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+	</joint>
+	<actuator name= "motor8">
+      		<mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+</transmission>
+
+<gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/swerve</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+    </plugin>
+</gazebo>
+
+</robot>

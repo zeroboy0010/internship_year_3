@@ -1,0 +1,186 @@
+<?xml version = "1.0"?>
+<robot name = "wheel" xmlns:xacro= "http:/www.ros.org/wiki/xacro">
+
+	<!-- motor -->
+	<xacro:property name="motor_r" value="0.025"/>
+	<xacro:property name="motor_h" value= "0.15"/>
+	<!-- ===== -->
+	
+	<!-- motor mass -->
+	<xacro:property name = "motor_mass" value = "0.5"/>
+	<!-- ========= -->
+	
+	
+	<!-- wheel -->
+	<xacro:property name = "wheel_r" value = "0.05"/>
+	<xacro:property name = "wheel_h" value = "0.05" />
+	<!-- ===== -->
+	
+	<!-- wheel mass -->
+	<xacro:property name = "wheel_mass" value = "0.6"/>
+	<!-- ===== -->
+	
+	<!-- wheel_moment of inertia -->
+	<xacro:property name = "wixx" value = "0.00102"/>
+	<xacro:property name ="wiyy" value ="0.00102"/>
+	<xacro:property name = "wizz" value = "0.00016"/>
+	<!-- ======================= -->
+	
+	<!-- effort -->
+	<xacro:property name= "effort" value = "5"/>
+	<xacro:property name="velocity" value = "50"/>
+	<!-- ============ -->
+	
+	<!-- motor1 location -->
+    	<xacro:property name="motor_x" value = "0.3"/>
+	<xacro:property name="motor_y" value = "0.3"/>
+	<xacro:property name="motor_z" value = "0"/>
+	<xacro:property name =  "mixx" value = "0.0005"/>
+	<xacro:property name ="miyy" value ="0.0005"/>
+	<xacro:property name = "mizz" value = "0.00075"/>
+	<!-- ============== -->
+	<!-- wheel location -->
+	<xacro:property name="wheel_x" value ="0.0025"/>
+	<xacro:property name="wheel_y" value ="0.0025"/>
+	<xacro:property name="wheel_z" value ="0"/>
+	<!-- ============== -->
+	<!-- motor2 location -->
+	<xacro:property name = "motor2_x" value = "0"/>
+	<xacro:property name = "motor2_y" value = "0"/>
+	<xacro:property name = "motor2_z" value ="-0.075"/>
+	<!-- ============== -->
+
+	
+	<xacro:macro name = "motor" params = "prefix parent r b">
+		<joint name = "${prefix}_m1" type = "continuous">
+			<parent link = "${parent}"/>
+			<child link = "${prefix}_m1_link"/>
+			<origin xyz = "${r*motor_x} ${b*motor_y} ${motor_z}"/>
+			<axis xyz = "0 0 1" rpy = "0 0 1.57"/>
+			<limit effort = "${effort}" velocity = "${velocity}" />
+		</joint>
+		<link name = "${prefix}_m1_link">
+			<visual>
+			<origin xyz = "0 0 0" rpy = "0 0 0"/>
+			<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+			</geometry>
+			<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+			</material>
+			</visual>
+			<collision>
+			<origin xyz ="0 0 0" rpy = "0 0 0"/>
+			<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+			</geometry>
+			<surface>
+          		<friction>
+            		<ode>
+              			<mu>200.0</mu>
+              			<mu2>100.0</mu2>
+            		</ode>
+          		</friction>
+        			</surface>
+			<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+			</material>
+			</collision>
+			<inertial>
+			<mass value = "${motor_mass}"/>
+			<origin value ="0 0 0"/>
+			<inertia ixx = "${mixx}" ixy="0" ixz ="0" iyy = "${miyy}" iyz ="0" izz = "${mizz}"/>
+			</inertial>
+		</link>
+		
+		<joint name = "${prefix}_m2" type = "fixed">
+			<parent link = "${prefix}_m1_link"/>
+			<child link = "${prefix}_m2_link"/>
+			<origin xyz = "${motor2_x} ${motor2_y} ${motor2_z}" rpy = "0 1.57 0"/>
+		</joint>
+		<link name = "${prefix}_m2_link">
+			<visual>
+			<origin xyz="0 0 0" rpy = "0 0 0"/>
+			<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+			</geometry>
+			<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+			</material>
+			</visual>
+			<collision>
+			<origin xyz="0 0 0" rpy = "0 0 0"/>
+			<geometry>
+			<cylinder length="${motor_h}" radius = "${motor_r}"/>
+			</geometry>
+			<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+			</material>
+			</collision>
+			<inertial>
+			<mass value = "${motor_mass}"/>
+			<origin xyz = "0 0 0"/>
+			<inertia ixx="${mixx}" ixy = "0" ixz = "0" iyy = "${miyy}" iyz = "0" izz = "${mizz}"/>
+			</inertial>
+		</link>
+		<joint name = "${prefix}_wheel" type = "continuous">
+			<parent link = "${prefix}_m2_link"/>
+			<child link = "${prefix}_wheel_link"/>
+			<origin xyz = "${wheel_x} ${wheel_y} ${wheel_z}"/>
+			<axis xyz = "0 0 1" rpy = "0 0 1.57"/>
+			<limit effort = "${effort}" velocity = "${velocity}"/>
+		</joint>
+		<link name = "${prefix}_wheel_link">
+			<visual>
+			<origin xyz="0 0 0" rpy = "0 0 0"/>
+			<geometry>
+			<cylinder length = "${wheel_h}" radius ="${wheel_r}" />
+			</geometry>
+			<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+			</material>
+			</visual>
+			<collision>
+			<origin xyz="0 0 0" rpy = "0 0 0"/>
+			<geometry>
+			<cylinder length = "${wheel_h}" radius ="${wheel_r}" />
+			</geometry>
+			<surface>
+          		<friction>
+            		<ode>
+              			<mu>200.0</mu>
+              			<mu2>100.0</mu2>
+            		</ode>
+          		</friction>
+        			</surface>
+			<material name= "white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+			</material>
+			</collision>
+			<inertial>
+			<mass value = "${wheel_mass}"/>
+			<origin xyz = "0 0 0"/>
+			<inertia ixx="${wixx}" ixy = "0" ixz = "0" iyy = "${wiyy}" iyz = "0" izz = "${wizz}"/>
+			</inertial>
+		</link>
+		<transmission name = "${prefix}_t1">
+			<type>transmission_interface/SimpleTransmission</type>
+			<joint name = "${prefix}_m1">
+			<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			</joint>
+			<actuator name= "${prefix}_motor">
+			<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      			<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+		</transmission>
+		<transmission name = "${prefix}_t2">
+			<type>transmission_interface/SimpleTransmission</type>
+			<joint name = "${prefix}_wheel">
+			<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+			</joint>
+			<actuator name= "${prefix}_mw">
+      			<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+		</transmission>
+	</xacro:macro>
+</robot>

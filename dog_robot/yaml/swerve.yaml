@@ -1,0 +1,38 @@
+swerve:
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50  
+    
+  b1_t1_controller:
+    type: effort_controllers/JointPositionController
+    joint: b1_m1
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  b1_t2_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: b1_wheel
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  b2_t1_controller:
+    type: effort_controllers/JointPositionController
+    joint: b2_m1
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  b2_t2_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: b2_wheel
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  f1_t1_controller:
+    type: effort_controllers/JointPositionController
+    joint: f1_m1
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  f1_t2_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: f1_wheel
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  f2_t1_controller:
+    type: effort_controllers/JointPositionController
+    joint: f2_m1
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  f2_t2_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: f2_wheel
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  

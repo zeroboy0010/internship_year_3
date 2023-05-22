@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robot">
+ <xacro:include filename="$(find dog_robot)/urdf/dog_leg2.xacro" />
+ <xacro:include filename="$(find dog_robot)/urdf/dog_leg1.xacro" />
+ <xacro:leg1 prefix="back1" reflect="1" />
+ <xacro:leg1 prefix="back2" reflect="-1" />
+ <xacro:leg1 prefix="face1" reflect="1" />
+ <xacro:leg1 prefix="face2" reflect="-1" />
+<link name = "base_link">
+	<visual>
+		<geometry>
+			<box size="0.3 0.7 0.2"/>
+		</geometry>
+		<color name="yellow" />
+	</visual>
+</link>
+<joint name= " leg1_back1_base_leg" type = "continuous">
+    	<origin xyz="${reflect*0.15} -0.3 0" rpy="0 0 0"/>
+    	<parent link="${prefix}_base_leg"/>
+    	<child link="${prefix}_leg1"/>
+</joint>
+<joint name= " leg1_back2_base_leg" type = "continuous">
+    	<origin xyz="${reflect*0.15} -0.3 0" rpy="0 0 0"/>
+    	<parent link="${prefix}_base_leg"/>
+    	<child link="${prefix}_leg1"/>
+</joint>
+<joint name= " leg1_face1_base_leg" type = "continuous">
+    	<origin xyz="${reflect*0.15} 0.25 0" rpy="0 0 0"/>
+    	<parent link="${prefix}_base_leg"/>
+    	<child link="${prefix}_leg1"/>
+</joint>
+<joint name= " leg1_face2_base_leg" type = "continuous">
+    	<origin xyz="${reflect*0.15} 0.25 0" rpy="0 0 0"/>
+    	<parent link="${prefix}_base_leg"/>
+    	<child link="${prefix}_leg1"/>
+</joint>
+</robot>

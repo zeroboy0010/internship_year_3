@@ -1,0 +1,371 @@
+<?xml version="1.0" ?>
+<robot name="dog_leg" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+
+    <!-- property of robot -->
+    <xacro:property name="under_base_length" value="0.1"/>
+    <xacro:property name="under_base_radius" value="0.15"/>
+
+        <!-- property of robot -->
+    <xacro:property name="link_1_length" value="0.6"/>
+    <xacro:property name="link_1_radius" value="0.05"/>
+
+        <!-- property of robot -->
+    <xacro:property name="link_2_radius" value="0.07"/>
+
+            <!-- property of robot -->
+    <xacro:property name="link_3_length" value="0.2"/>
+    <xacro:property name="link_3_radius" value="0.05"/>
+
+                <!-- property of robot -->
+    <xacro:property name="link_4_x" value="0.05"/>
+    <xacro:property name="link_4_y" value="0.1"/>
+    <xacro:property name="link_4_z" value="0.5"/>
+
+                <!-- property of robot -->
+    <xacro:property name="leg_base_length" value="0.05"/>
+    <xacro:property name="leg_base_radius" value="0.02"/>
+
+                    <!-- property of robot -->
+    <xacro:property name="j_leg_01_radius" value="0.03"/>
+    <xacro:property name="j_leg_02_radius" value="0.02"/>
+
+    <xacro:property name="leg1_h" value="0.20"/>
+    <xacro:property name="leg2_h" value="0.15"/>
+    <xacro:property name="leg_r" value="0.015"/>
+    <!-- something -->
+    <xacro:property name = "effort" value = "300"/>
+    <xacro:property name = "velocity" value = "0.5"/>
+    <xacro:property name = "lower" value = "-3.14"/>
+    <xacro:property name = "upper" value = "3.14"/>
+
+    <link name="dummy">
+
+    </link>
+    <joint name="dummy_base" type = "fixed">
+	    <parent link="dummy"/>
+	    <child link = "under_base"/>
+	
+    </joint>
+    <link name="under_base">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="1"/>
+            <inertia ixx="0.15" ixy="0.0" ixz="0.0" iyy="0.15" iyz="0.0" izz="0.125"/>
+        </inertial>
+        <visual name="visual">
+            <origin xyz="0.0 0.0 ${under_base_length/2}" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${under_base_radius}" length="${under_base_length}"/>
+            </geometry>
+            <material name="">
+                <color rgba="1.0 0.0 0.0 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 ${under_base_length/2}" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${under_base_radius}" length="${under_base_length}"/>
+            </geometry>
+        </collision>
+    </link>
+    <link name="link_1">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="1"/>
+            <inertia ixx="0.15" ixy="0.0" ixz="0.0" iyy="0.15" iyz="0.0" izz="0.125"/>
+        </inertial>
+        <visual name="visual">
+            <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${link_1_radius}" length="${link_1_length}"/>
+            </geometry>
+            <material name="">
+                <color rgba="1.0 0.0 0.0 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${link_1_radius}" length="${link_1_length}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="link_2">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="1"/>
+            <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+        </inertial>
+        <visual name="">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+            <sphere radius="${link_2_radius}"/>
+            </geometry>
+            <material name="">
+                <color rgba="1.0 0.0 0.0 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="0.0 0.0 0.0"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="link_3">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="1"/>
+            <inertia ixx="0.15" ixy="0.0" ixz="0.0" iyy="0.15" iyz="0.0" izz="0.125"/>
+        </inertial>
+        <visual name="">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${link_3_radius}" length="${link_3_length}"/>
+            </geometry>
+            <material name="">1.0
+                <color rgba="1.0 0.0 0.0 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${link_3_radius}" length="${link_3_length}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="link_4">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.0"/>
+            <inertia ixx="0.166667" ixy="0.0" ixz="0.0" iyy="0.166667" iyz="0.0" izz="0.166667"/>
+        </inertial>
+        <visual name="">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${link_4_x} ${link_4_y} ${link_4_z}"/>
+            </geometry>
+            <material name="">
+                <color rgba="1.0 0.0 0.0 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${link_4_x} ${link_4_y} ${link_4_z}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="leg_base">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 1.5707 0.0"/>
+            <mass value="1.0"/>
+            <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+        </inertial>
+        <visual name="">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 1.5707 0.0"/>
+            <geometry>
+                <cylinder radius="${leg_base_radius}" length="${leg_base_length}"/>
+            </geometry>
+            <material name="">
+                <color rgba="1.0 1.0 1.0 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 1.5707 0.0"/>
+            <geometry>
+                <cylinder radius="${leg_base_radius}" length="${leg_base_length}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="j_leg_01">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.0"/>
+            <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+        </inertial>
+        <visual name="">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <sphere radius="${j_leg_01_radius}"/>
+            </geometry>
+            <material name="">
+                <color rgba="0.0 0.0 1.0 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <sphere radius="0.02"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="leg1">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.0"/>
+            <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+        </inertial>
+        <visual name="">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${leg_r}" length="${leg1_h}"/>
+            </geometry>
+            <material name="">
+                <color rgba="1.0 1.0 1.0 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${leg_r}" length="${leg1_h}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="j_leg_02">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.0"/>
+            <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+        </inertial>
+        <visual name="">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <sphere radius="${j_leg_02_radius}"/>
+            </geometry>
+            <material name="">
+                <color rgba="0.0 0.0 1.0 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <sphere radius="${j_leg_02_radius}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="leg2">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.0"/>
+            <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+        </inertial>
+        <visual name="">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${leg_r}" length="${leg2_h}"/>
+            </geometry>
+            <material name="">
+                <color rgba="1.0 1.0 1.0 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${leg_r}" length="${leg2_h}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="ball">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.0"/>
+            <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+        </inertial>
+        <visual name="">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <sphere radius="0.02"/>
+            </geometry>
+            <material name="">
+                <color rgba="0.0 0.0 1.0 1.0"/>
+                <texture filename=""/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <sphere radius="0.02"/>
+            </geometry>
+        </collision>
+    </link>
+
+
+    <joint name="under_base_to_link_1" type="fixed">
+        <origin xyz="0.0 0.0 ${(under_base_length + link_1_length)/2}" rpy="0.0 0.0 0.0"/>
+        <parent link="under_base"/>
+        <child link="link_1"/>
+        <axis xyz="0.0 0.0 0.0"/>
+    </joint>
+
+    <joint name="link_1_to_link_2" type="fixed">
+        <origin xyz="0.0 0.0 ${(link_1_length)/2 -0.01}" rpy="0.0 0.0 0.0"/>
+        <parent link="link_1"/>
+        <child link="link_2"/>
+        <axis xyz="0.0 0.0 0.0"/>
+    </joint>
+
+    <joint name="link_2_to_link_3" type="fixed">
+        <origin xyz="${link_3_length/2 - 0.01} 0.0 0.0" rpy="0.0 1.5707 0.0"/>
+        <parent link="link_2"/>
+        <child link="link_3"/>
+        <axis xyz="0.0 0.0 0.0"/>
+    </joint>
+
+    <joint name="link_3_to_link_4" type="fixed">
+        <origin xyz="0.18 0.0 ${(link_3_length + link_4_x)/2}" rpy="0.0 -1.5707 0.0"/>
+        <parent link="link_3"/>
+        <child link="link_4"/>
+        <axis xyz="0.0 0.0 0.0"/>
+    </joint>
+
+    <joint name="link_4_to_leg_base" type="fixed"> <!--  i want to use ....-->
+        <origin xyz="${(leg_base_length + link_4_x)/2} 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="link_4"/>
+        <child link="leg_base"/>
+        <axis xyz="0.0 0.0 0.0"/>
+        <!-- <limit lower="-1" upper="1" effort="-1" velocity="-1"/> -->
+    </joint>
+
+    <joint name="j_leg_01_to_leg_base" type="continuous">
+        <origin xyz="${leg_base_length/2} 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="leg_base"/>
+        <child link="j_leg_01"/>
+        <limit lower="${lower}" upper="${upper}" effort="${effort}" velocity="${velocity}"/>
+    </joint>
+
+    <joint name="leg1_to_j_leg_01" type="fixed">
+        <origin xyz="0.0 0.0 ${-(leg1_h/2)}" rpy="0.0 0.0 0.0"/>
+        <parent link="j_leg_01"/>
+        <child link="leg1"/>
+    </joint>
+
+    <joint name="j_leg_02_to_leg1" type="continuous">
+        <origin xyz="0.0 0.0 ${-(leg1_h/2)}" rpy="0.0 0.0 0.0"/>
+        <parent link="leg1"/>
+        <child link="j_leg_02"/>
+        <limit lower="${lower}" upper="${upper}" effort="${effort}" velocity="${velocity}"/>
+    </joint>
+
+    <joint name="leg2_to_j_leg_02" type="fixed">
+        <origin xyz="0.0 0.0 ${-(leg2_h/2)}" rpy="0.0 0.0 0.0"/>
+        <parent link="j_leg_02"/>
+        <child link="leg2"/>
+    </joint>
+
+    <joint name="ball_to_leg2" type="fixed">
+        <origin xyz="0.0 0.0 ${-(leg2_h/2)}" rpy="0.0 0.0 0.0"/>
+        <parent link="leg2"/>
+        <child link="ball"/>
+    </joint>
+</robot>

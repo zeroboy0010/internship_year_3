@@ -1,0 +1,53 @@
+dog_robot:
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50  
+    
+  leg1_back1_base_link_controller:
+    type: effort_controllers/JointPositionController
+    joint: leg1_back1_base_link
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  back1_rot_base_controller:
+    type: effort_controllers/JointPositionController
+    joint: back1_rot_base
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  back1_leg1_joint_controller:
+    type: effort_controllers/JointPositionController
+    joint: back1_leg1_joint1
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  leg1_back2_base_link_controller:
+    type: effort_controllers/JointPositionController
+    joint: leg1_back2_base_link
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  back2_rot_base_controller:
+    type: effort_controllers/JointPositionController
+    joint: back2_rot_base
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  back2_leg1_joint_controller:
+    type: effort_controllers/JointPositionController
+    joint: back2_leg1_joint1
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  leg1_face1_base_link_controller:
+    type: effort_controllers/JointPositionController
+    joint: leg1_face1_base_link
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  face1_rot_base_controller:
+    type: effort_controllers/JointPositionController
+    joint: face1_rot_base
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  face1_leg1_joint_controller:
+    type: effort_controllers/JointPositionController
+    joint: face1_leg1_joint1
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  leg1_face2_base_link_controller:
+    type: effort_controllers/JointPositionController
+    joint: leg1_face2_base_link
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  face2_rot_base_controller:
+    type: effort_controllers/JointPositionController
+    joint: face2_rot_base
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  face2_leg1_joint_controller:
+    type: effort_controllers/JointPositionController
+    joint: face2_leg1_joint1
+    pid: {p: 100.0, i: 0.01, d: 10.0}
